@@ -1,0 +1,5 @@
+svecon_mff_notifier:
+    resource: "@SveconMffNotifierBundle/Controller/"
+    type:     annotation
+    prefix:   /
+

@@ -1,0 +1,67 @@
+<?php
+
+namespace Svecon\MffNotifierBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Website
+ *
+ * @ORM\Table(name="website")
+ * @ORM\Entity
+ */
+class Website
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=false)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hash", type="string", length=255, nullable=false)
+     */
+    private $hash;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="selector", type="string", length=255, nullable=false)
+     */
+    private $selector;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ordered", type="integer", nullable=true)
+     */
+    private $ordered;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated", type="datetime", nullable=false)
+     */
+    private $updated;
+
+
+}
