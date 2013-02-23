@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="subscriber")
  * @ORM\Entity
  */
-class Subscriber
-{
+class Subscriber {
+
     /**
      * @var integer
      *
@@ -35,15 +35,12 @@ class Subscriber
      */
     private $name;
 
-
-
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -53,10 +50,9 @@ class Subscriber
      * @param string $email
      * @return Subscriber
      */
-    public function setEmail($email)
-    {
+    public function setEmail($email) {
         $this->email = $email;
-    
+
         return $this;
     }
 
@@ -65,8 +61,7 @@ class Subscriber
      *
      * @return string 
      */
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
@@ -76,10 +71,9 @@ class Subscriber
      * @param string $name
      * @return Subscriber
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -88,8 +82,8 @@ class Subscriber
      *
      * @return string 
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
+
 }

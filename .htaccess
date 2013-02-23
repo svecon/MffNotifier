@@ -5,7 +5,7 @@ RewriteEngine On
 RewriteRule ^\.htaccess$ - [F]
  
 RewriteCond %{REQUEST_URI} =""
-RewriteRule ^.*$ /web/app_dev.php [NC,L]
+RewriteRule ^.*$ /web/app.php [NC,L]
  
 RewriteCond %{REQUEST_URI} !web/.*$
 RewriteRule ^(.*)$ web/$1
@@ -13,10 +13,4 @@ RewriteRule ^(.*)$ web/$1
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^.*$ - [NC,L]
  
-RewriteRule web/.*$ /web/app_dev.php [NC,L]
-
-#RewriteCond %{REQUEST_FILENAME} -s [OR]
-#RewriteCond %{REQUEST_FILENAME} -l [OR]
-#RewriteCond %{REQUEST_FILENAME} -d
-#RewriteRule ^.*$ - [NC,L]
-#RewriteRule ^.*$ app.php [NC,L]
+RewriteRule web/.*$ /web/app.php [NC,L]

@@ -7,8 +7,6 @@
     <field name="title" type="string" column="title" length="255" nullable="false"/>
     <field name="url" type="string" column="url" length="255" nullable="false"/>
     <field name="hash" type="string" column="hash" length="255" nullable="false"/>
-    <field name="selector" type="string" column="selector" length="255" nullable="false"/>
-    <field name="ordered" type="integer" column="ordered" nullable="true"/>
-    <field name="updated" type="datetime" column="updated" nullable="false"/>
+    <field name="lastUpdate" type="datetime" column="last_update" nullable="false"/>
   </entity>
 </doctrine-mapping>

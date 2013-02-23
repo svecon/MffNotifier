@@ -5,13 +5,13 @@ namespace Svecon\MffNotifierBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Website
+ * Section
  *
- * @ORM\Table(name="website")
+ * @ORM\Table(name="section")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class Website {
+class Section {
 
     /**
      * @var integer
@@ -32,9 +32,16 @@ class Website {
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255, nullable=false)
+     * @ORM\Column(name="selector", type="string", length=255, nullable=false)
      */
-    private $url;
+    private $selector;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ordered", type="integer", nullable=true)
+     */
+    private $ordered;
 
     /**
      * @var string
@@ -51,6 +58,16 @@ class Website {
     private $lastUpdate;
 
     /**
+     * @var \Website
+     *
+     * @ORM\ManyToOne(targetEntity="Website")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="website_id", referencedColumnName="id", nullable=false)
+     * })
+     */
+    private $website;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -63,7 +80,7 @@ class Website {
      * Set title
      *
      * @param string $title
-     * @return Website
+     * @return Section
      */
     public function setTitle($title) {
         $this->title = $title;
@@ -81,31 +98,52 @@ class Website {
     }
 
     /**
-     * Set url
+     * Set selector
      *
-     * @param string $url
-     * @return Website
+     * @param string $selector
+     * @return Section
      */
-    public function setUrl($url) {
-        $this->url = $url;
+    public function setSelector($selector) {
+        $this->selector = $selector;
 
         return $this;
     }
 
     /**
-     * Get url
+     * Get selector
      *
      * @return string 
      */
-    public function getUrl() {
-        return $this->url;
+    public function getSelector() {
+        return $this->selector;
+    }
+
+    /**
+     * Set ordered
+     *
+     * @param integer $ordered
+     * @return Section
+     */
+    public function setOrdered($ordered) {
+        $this->ordered = $ordered;
+
+        return $this;
+    }
+
+    /**
+     * Get ordered
+     *
+     * @return integer 
+     */
+    public function getOrdered() {
+        return $this->ordered;
     }
 
     /**
      * Set hash
      *
      * @param string $hash
-     * @return Website
+     * @return Section
      */
     public function setHash($hash) {
         $this->hash = $hash;
@@ -126,7 +164,7 @@ class Website {
      * Set lastUpdate
      *
      * @param \DateTime $lastUpdate
-     * @return Website
+     * @return Section
      */
     public function setLastUpdate($lastUpdate) {
         $this->lastUpdate = $lastUpdate;
@@ -141,6 +179,27 @@ class Website {
      */
     public function getLastUpdate() {
         return $this->lastUpdate;
+    }
+
+    /**
+     * Set website
+     *
+     * @param \Svecon\MffNotifierBundle\Entity\Website $website
+     * @return Section
+     */
+    public function setWebsite(\Svecon\MffNotifierBundle\Entity\Website $website = null) {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * Get website
+     *
+     * @return \Svecon\MffNotifierBundle\Entity\Website 
+     */
+    public function getWebsite() {
+        return $this->website;
     }
 
     /**

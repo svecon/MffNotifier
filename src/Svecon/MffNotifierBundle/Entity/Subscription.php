@@ -7,11 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Subscription
  *
- * @ORM\Table(name="subscription")
+ * @ORM\Table(name="subscription",uniqueConstraints={@ORM\UniqueConstraint(name="subscriber_section", columns={"section_id", "subscriber_id"})}))
  * @ORM\Entity
  */
-class Subscription
-{
+class Subscription {
+
     /**
      * @var integer
      *
@@ -22,58 +22,53 @@ class Subscription
     private $id;
 
     /**
-     * @var \Website
+     * @var \Section
      *
-     * @ORM\ManyToOne(targetEntity="Website")
+     * @ORM\ManyToOne(targetEntity="Section")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="website_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="section_id", referencedColumnName="id", nullable=false)
      * })
      */
-    private $website;
+    private $section;
 
     /**
      * @var \Subscriber
      *
      * @ORM\ManyToOne(targetEntity="Subscriber")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="subscriber_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="subscriber_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $subscriber;
-
-
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
-     * Set website
+     * Set section
      *
-     * @param \Svecon\MffNotifierBundle\Entity\Website $website
+     * @param \Svecon\MffNotifierBundle\Entity\Section $section
      * @return Subscription
      */
-    public function setWebsite(\Svecon\MffNotifierBundle\Entity\Website $website = null)
-    {
-        $this->website = $website;
-    
+    public function setSection(\Svecon\MffNotifierBundle\Entity\Section $section = null) {
+        $this->section = $section;
+
         return $this;
     }
 
     /**
-     * Get website
+     * Get section
      *
-     * @return \Svecon\MffNotifierBundle\Entity\Website 
+     * @return \Svecon\MffNotifierBundle\Entity\Section 
      */
-    public function getWebsite()
-    {
-        return $this->website;
+    public function getSection() {
+        return $this->section;
     }
 
     /**
@@ -82,10 +77,9 @@ class Subscription
      * @param \Svecon\MffNotifierBundle\Entity\Subscriber $subscriber
      * @return Subscription
      */
-    public function setSubscriber(\Svecon\MffNotifierBundle\Entity\Subscriber $subscriber = null)
-    {
+    public function setSubscriber(\Svecon\MffNotifierBundle\Entity\Subscriber $subscriber = null) {
         $this->subscriber = $subscriber;
-    
+
         return $this;
     }
 
@@ -94,8 +88,8 @@ class Subscription
      *
      * @return \Svecon\MffNotifierBundle\Entity\Subscriber 
      */
-    public function getSubscriber()
-    {
+    public function getSubscriber() {
         return $this->subscriber;
     }
+
 }
