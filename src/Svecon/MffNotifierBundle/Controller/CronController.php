@@ -2,11 +2,12 @@
 
 namespace Svecon\MffNotifierBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sunra\PhpSimple\HtmlDomParser;
+use Swift_Attachment;
 use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class CronController extends Controller {
 
@@ -34,10 +35,16 @@ class CronController extends Controller {
 
         foreach ($entries as $entry) {
             $webID = $entry->getSection()->getWebsite()->getId();
+            $selector = $entry->getSection()->getSelector();
 
             // Cache website (using with multiple sections and users)
             if (!isset($this->websiteCache[$webID])) {
-                $this->websiteCache[$webID] = HtmlDomParser::file_get_html($entry->getSection()->getWebsite()->getUrl());
+                $contents = file_get_contents($entry->getSection()->getWebsite()->getUrl());
+                if ($selector == 'pdf') {
+                    $this->websiteCache[$webID] = $contents;
+                } else {
+                    $this->websiteCache[$webID] = HtmlDomParser::str_get_html($contents);
+                }
 
                 // Whole page didn't change
                 if (md5($this->websiteCache[$webID]) == $entry->getSection()->getWebsite()->getHash())
@@ -50,20 +57,34 @@ class CronController extends Controller {
             }
 
             // Section didn't change
-            $section = $this->websiteCache[$webID]->find($entry->getSection()->getSelector(), $entry->getSection()->getOrdered());
+            if ($selector == 'pdf') {
+                $section = $this->websiteCache[$webID];
+            } else {
+                $section = $this->websiteCache[$webID]->find($selector, $entry->getSection()->getOrdered());
+            }
+
             if (md5($section) == $entry->getSection()->getHash())
                 continue;
 
-            // Update hashes
-            $entry->getSection()->setHash(md5($section));
-            $em->persist($entry->getSection());
-            $em->flush();
+            // Update hashes if not PDF
+            if ($selector != "pdf") {
+                $entry->getSection()->setHash(md5($section));
+                $em->persist($entry->getSection());
+                $em->flush();
+            }
 
             $counterSections++;
 
             // Cache user email -> send only one email per user
             $userID = $entry->getSubscriber()->getId();
-            $emailBody = "<h2>{$entry->getSection()->getWebsite()->getTitle()}: {$entry->getSection()->getTitle()}</h2>{$section->outertext}";
+
+            $title = "{$entry->getSection()->getWebsite()->getTitle()}: {$entry->getSection()->getTitle()}";
+            $emailBody = "<h2>{$title}</h2>";
+            if ($selector == 'pdf') {
+                $emailBody .= "(viz příloha)";
+            } else {
+                $emailBody .= $section->outertext;
+            }
 
             if (isset($this->emailCache[$userID])) {
                 $this->emailCache[$userID]->setBody(
@@ -79,6 +100,12 @@ class CronController extends Controller {
                         ->setBody($emailBody, 'text/html')
                 ;
             }
+
+            if ($selector == 'pdf') {
+                $this->emailCache[$userID]->attach(
+                        Swift_Attachment::newInstance($section, $this->url($title . ".pdf"), "application/pdf")
+                );
+            }
         }
 
         // Send emails
@@ -87,9 +114,16 @@ class CronController extends Controller {
             $counterSubscribers++;
         }
 
-
-
         return new Response("<body>$counterSections webistes changed, $counterSubscribers emails sent</body>");
+    }
+
+    function url($url) {
+        $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url);
+        $url = trim($url, "-");
+        $url = iconv("utf-8", "us-ascii//TRANSLIT", $url);
+        $url = strtolower($url);
+        $url = preg_replace('~[^-a-z0-9_]+~', '', $url);
+        return $url;
     }
 
 }
