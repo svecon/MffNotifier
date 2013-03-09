@@ -56,13 +56,18 @@ class CronController extends Controller {
                 $em->flush();
             }
 
-            // Section didn't change
+            // Whole page didn't change
+            if (md5($this->websiteCache[$webID]) == $entry->getSection()->getWebsite()->getHash())
+                continue;
+
+            // Getting section
             if ($selector == 'pdf') {
                 $section = $this->websiteCache[$webID];
             } else {
                 $section = $this->websiteCache[$webID]->find($selector, $entry->getSection()->getOrdered());
             }
-
+            
+            // Section didn't change
             if (md5($section) == $entry->getSection()->getHash())
                 continue;
 
