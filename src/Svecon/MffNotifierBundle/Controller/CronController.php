@@ -13,6 +13,7 @@ class CronController extends Controller {
 
     protected $websiteCache = array();
     protected $emailCache = array();
+    protected $hasChanged = array();
 
     /**
      * @Route("/cron")
@@ -45,10 +46,13 @@ class CronController extends Controller {
                 } else {
                     $this->websiteCache[$webID] = HtmlDomParser::str_get_html($contents);
                 }
-
+                
+                $this->hasChanged[$webID] = false;
                 // Whole page didn't change
                 if (md5($this->websiteCache[$webID]) == $entry->getSection()->getWebsite()->getHash())
                     continue;
+                
+                $this->hasChanged[$webID] = true;
 
                 // Update hashes
                 $entry->getSection()->getWebsite()->setHash(md5($this->websiteCache[$webID]));
@@ -57,7 +61,7 @@ class CronController extends Controller {
             }
 
             // Whole page didn't change
-            if (md5($this->websiteCache[$webID]) == $entry->getSection()->getWebsite()->getHash())
+            if (! $this->hasChanged[$webID])
                 continue;
 
             // Getting section
