@@ -14,6 +14,7 @@ class CronController extends Controller {
     protected $websiteCache = array();
     protected $emailCache = array();
     protected $hasChanged = array();
+    protected $hasChangedSection = array();
 
     /**
      * @Route("/cron")
@@ -72,7 +73,11 @@ class CronController extends Controller {
             }
             
             // Section didn't change
-            if (md5($section) == $entry->getSection()->getHash())
+            $sectionId = $entry->getSection()->getId();
+            if (!isset($this->hasChangedSection[$sectionId])){
+                $this->hasChangedSection[$sectionId] = md5($section) != $entry->getSection()->getHash();
+            }
+            if (!$this->hasChangedSection[$sectionId])
                 continue;
 
             // Update hashes if not PDF
